@@ -1,5 +1,5 @@
 /* ============================================================
-   LEE NAHYUN Portfolio — script.js
+   LEE NAHYUN Portfolio - script.js
    Sidebar Layout (migrated from portfolio3 carousel)
    ============================================================ */
 
@@ -320,7 +320,7 @@ const projects = [
     youtubeId: 'ucorOvw9rcc',
     orientation: 'horizontal',
     scenes: [],
-    brief: `외부 섭외의 한계를 돌파하기 위해 제작자가 직접 농사에 참여하는 오리지널 리얼리티 포맷을 기획해 단일 영상 최고 조회수 40만 회 달성 및 전사 '도전왕' 1위을 수상한 채널 턴어라운드 프로젝트. 제품의 실제 효능을 날것의 스토리텔링과 세대 간의 유쾌한 티키타카로 풀어내어 콘텐츠의 오락성과 신뢰도를 동시에 극대화함. 단일 콘텐츠 기준 최고 조회수 40만회 돌파. 압도적인 채널 기여도를 인정받아 전사 혁신 및 성과 평가 '도전왕' 부문 1등 수상.`,
+    brief: `외부 섭외의 한계를 돌파하기 위해 제작자가 직접 농사에 참여하는 오리지널 리얼리티 포맷을 기획해 단일 영상 최고 조회수 40만 회 달성 및 전사 '도전왕' 1위를 수상한 채널 턴어라운드 프로젝트. 제품의 실제 효능을 현장형 스토리텔링과 세대 간의 유쾌한 호흡으로 풀어내 콘텐츠의 오락성과 신뢰도를 동시에 높임. 단일 콘텐츠 기준 최고 조회수 40만 회를 돌파했으며, 채널 기여도를 인정받아 전사 혁신 및 성과 평가 '도전왕' 부문 1위를 수상함.`,
     process: [
       { title: '01 오리지널 IP 기획', desc: "기존 외부 인력 섭외 방식의 제품 실증 영상은 스케줄링의 한계와 작위적인 연출로 인해 시청자의 지속적인 공감대 형성과 채널 충성도 제고에 한계 발생. 프로 농사꾼 아빠와 함께 직접 농사를 짓는 '리얼리티 다큐·예능 포맷'으로 전환함." },
       { title: '02 세대 간 티키타카 서사 설계', desc: "새로운 방식을 추구하는 비료 회사 직원 딸과 전통만을 고집하는 아빠의 유쾌한 충돌을 핵심 서사로 활용. 시청자의 심리적 진입 장벽 완화." },
@@ -858,10 +858,12 @@ function renderNav() {
 function openMenu() {
   document.body.classList.add('menu-open');
   byId('menu-toggle').setAttribute('aria-expanded', 'true');
+  byId('menu-toggle').setAttribute('aria-label', '메뉴 닫기');
 }
 function closeMenu() {
   document.body.classList.remove('menu-open');
   byId('menu-toggle').setAttribute('aria-expanded', 'false');
+  byId('menu-toggle').setAttribute('aria-label', '메뉴 열기');
 }
 
 function goTo(id) {
@@ -909,12 +911,15 @@ function renderHero() {
   byId('hero').innerHTML = `
     <div class="reel-stage">
       <video id="hero-video" src="videos/showreel-hero.mp4?v=6" poster="images/posters/showreel.jpg" muted loop playsinline preload="metadata" aria-label="이나현의 AI 영상 쇼릴"></video>
-      <div class="reel-title"><p>AI CREATOR &amp; VISUAL DIRECTOR</p><h1>현실을 담고,<br>상상을 만듭니다.</h1></div>
-      <button class="reel-play" id="showreel-open" aria-haspopup="dialog"><span class="reel-play-icon" aria-hidden="true">▶</span><span>쇼릴 전체 보기</span><span class="reel-runtime">00:25</span></button>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="reel-title">
+        <p>AI CREATOR &amp; VISUAL DIRECTOR</p>
+        <h1><span>현실을 담고,</span><span>상상을 만듭니다.</span></h1>
+        <span class="hero-summary">기획부터 촬영, AI 제작과 편집까지</span>
+      </div>
+      <button class="reel-play" id="showreel-open" aria-haspopup="dialog"><span class="reel-play-icon" aria-hidden="true">▶</span><span>쇼릴 보기</span><span class="reel-runtime">00:25</span></button>
       <button id="hero-toggle" class="reel-toggle" aria-label="배경 영상 재생">재생</button>
-    </div>
-    <div class="reel-caption">
-      <div><span class="status-dot" aria-hidden="true"></span><span>LEE NAHYUN</span><span class="reel-caption-detail">AI 영상 · 실사 촬영</span></div>
+      <div class="hero-credit"><strong>LEE NAHYUN</strong><span>AI 영상 / 실사 촬영</span></div>
     </div>`;
   const v = byId('hero-video'), toggle = byId('hero-toggle');
   let manuallyPaused = reduceMotion;
@@ -941,30 +946,54 @@ function renderHero() {
 }
 
 /* ═══════════════════════════════════════════════
-   FEATURED (asymmetric 1 + 2)
+   FEATURED (sticky cinematic chapters)
 ═══════════════════════════════════════════════ */
 function renderFeatured() {
   const picks = FEATURED_IDS.map(findProject).filter(Boolean);
   if (!picks.length) return;
   byId('featured').innerHTML = `
-    <header class="featured-head"><h2>Selected works<span>.</span></h2><p>실사 촬영부터 AI 영상 제작까지.</p></header>
-    <div class="featured-grid">
+    <header class="featured-head">
+      <h2>Selected works<span>.</span></h2>
+      <p>현장에서 만든 이야기부터 AI로 설계한 장면까지.</p>
+    </header>
+    <div class="chapter-stack">
       ${picks.map((p, i) => `
-        <article class="feat reveal ${i === 0 ? 'feat-lead' : ''}" style="--i:${i}" data-open="${p.id}" tabindex="0" role="button">
-          <div class="feat-media ${p.orientation === 'vertical' ? 'is-vertical' : 'is-horizontal'}">
-            <img src="${p.thumbnail}" alt="${esc(p.title)}" loading="${i === 0 ? 'eager' : 'lazy'}">
-            ${p.videoSrc ? `<video src="${p.videoSrc}" muted loop playsinline preload="none" aria-hidden="true"></video>` : ''}
+        <article class="project-chapter" style="--chapter:${i}; --chapter-z:${picks.length - i}" data-mood="${[.12, .56, .9][i]}" data-open="${p.id}" tabindex="0" role="button" aria-label="${esc(p.title)} 자세히 보기">
+          <div class="chapter-media ${p.orientation === 'vertical' ? 'is-vertical' : 'is-horizontal'}">
+            <img class="chapter-backdrop" src="${p.thumbnail}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" aria-hidden="true">
+            <img class="chapter-poster" src="${p.thumbnail}" alt="${esc(p.title)}" loading="${i === 0 ? 'eager' : 'lazy'}">
+            ${p.videoSrc ? `<video class="chapter-video" src="${p.videoSrc}" muted loop playsinline preload="metadata" aria-hidden="true"></video>` : ''}
           </div>
-          <div class="feat-info">
-            ${p.badgeLabel ? `<span class="tag tag-strong">${esc(p.badgeLabel)}</span>` : ''}
+          <div class="chapter-copy">
+            <p class="chapter-kicker">${esc(p.badgeLabel || p.categoryLabel || '')}</p>
             <h3>${esc(p.title)}</h3>
             <p>${esc(p.desc)}</p>
+            <span class="chapter-link">작업 상세 보기 <b aria-hidden="true">↗</b></span>
           </div>
         </article>
       `).join('')}
     </div>
   `;
   wireCards(byId('featured'));
+  watchChapters();
+}
+
+function watchChapters() {
+  const chapters = [...document.querySelectorAll('.project-chapter')];
+  if (!chapters.length) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target.querySelector('.chapter-video');
+      entry.target.classList.toggle('is-active', entry.isIntersecting);
+      if (entry.isIntersecting) {
+        document.dispatchEvent(new CustomEvent('vfx:mood', { detail: { value: Number(entry.target.dataset.mood || 0) } }));
+        if (video && !reduceMotion) video.play().catch(() => {});
+      } else if (video) {
+        video.pause();
+      }
+    });
+  }, { rootMargin: '-20% 0px -20% 0px', threshold: .34 });
+  chapters.forEach(chapter => io.observe(chapter));
 }
 
 /* ═══════════════════════════════════════════════
@@ -1013,10 +1042,10 @@ function workCards() {
         ${p.videoSrc ? `<video src="${p.videoSrc}" muted loop playsinline preload="none" aria-hidden="true"></video>` : ''}
       </div>
       <div class="card-info">
+        <span class="card-type">${esc(p.categoryLabel || '')}</span>
         <h3>${esc(p.title)}</h3>
         <p>${esc(p.desc)}</p>
         <div class="card-foot">
-          <span class="tag">${esc(p.categoryLabel || '')}</span>
           ${p.badgeLabel ? `<span class="tag tag-strong">${esc(p.badgeLabel)}</span>` : ''}
         </div>
       </div>
